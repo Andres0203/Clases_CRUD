@@ -1,110 +1,54 @@
 package edu.udea.main.business;
 
 import edu.udea.main.model.Usuario;
+import edu.udea.main.repository.UsuarioRepositorio;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
-public class GestorUsuario {
+@Service
+public class GestorUsuario implements GestorUsuarioInterface{
 
-    private ArrayList<Usuario> usuarios;
+    @Autowired
+    private UsuarioRepositorio repositorio;
 
 
-//Instancia de usuarios
-    public GestorUsuario (){
-        this.usuarios = new ArrayList<>();
-
-        this.usuarios.add(new Usuario("Prueba1","Prueba", "1234"));
-        this.usuarios.add(new Usuario("Prueba1","Andres", "1234"));
-
+    @Override
+    public List<Usuario> getUsuarios() {
+        return repositorio.findAll();
     }
 
-   //Verificacion de existencia de usuario
-    public Usuario getUsuario (String nombreUsuario) throws Exception{
-        for (Usuario usuario: this.usuarios){
-            if (usuario.getNombreUsuario().equals(nombreUsuario) ){
-                return usuario;
-            }
+    @Override
+    public Usuario getUsuario(String id) throws Exception {
+        Optional <Usuario> usuariobd = repositorio.findById(id);
+        if(usuariobd.isPresent()){
+            return usuariobd.get();
         }
-        throw new Exception("Usuario No Existe.");
+        throw new Exception("Usuario No Existe.") ;
     }
 
-
-    //Creacion y verificación de existencia de usuarios
-    public String setUsuario (Usuario usuario) throws Exception{
-        try {
-            getUsuario (usuario.getNombreUsuario());
-
-        }catch (Exception e){
-
-            this.usuarios.add(usuario);
-            return "Creación de Usuario Exitosa.";
-        }
-        throw new Exception("Usuario Existe.");
+    @Override
+    public String setUsuario(Usuario usuario_parametro) {
+        repositorio.save(usuario_parametro);
+        return "Usuario creado con Exito.";
     }
 
-
-        //Metodo para usar el PATCH y actualizar solo una o mas variables
-    public Usuario updateUsuario(Usuario usuario_update, String id) throws Exception {
-        try {
-            Usuario usuario_bd = getUsuario(id);
-            if (usuario_update.getNombreUsuario() != null) {
-                usuario_bd.setNombre(usuario_update.getNombreUsuario());
-            }
-            if (usuario_update.getNombre() != null) {
-                usuario_bd.setNombre(usuario_update.getNombre());
-            }
-            if (usuario_update.getPassword() != null) {
-                usuario_bd.setPassword(usuario_update.getPassword());
-            }
-            return usuario_bd;
-        } catch (Exception e) {
-            throw new Exception("Usuario NO existe, falló actualización de datos.");
-        }
-
-    }
-
-
-        /* Metodo para usar el PUT, Y actualizar el objeto completo*/
+    @Override
     public Usuario updateUsuarioAll(Usuario usuario_update, String id) throws Exception {
-
-        try {
-            Usuario usuario_bd = getUsuario(id);
-            usuario_bd.setNombreUsuario(usuario_update.getNombreUsuario());
-            usuario_bd.setNombre(usuario_update.getNombre());
-            usuario_bd.setPassword(usuario_update.getPassword());
-
-            return usuario_bd;
-        } catch (Exception e) {
-            throw new Exception("Usuario NO existe, falló actualización de datos.");
-        }
+        repositorio.update(usuario_update.getNombre(),usuario_update.getPassword(), id);
+        return getUsuario(id);
     }
 
-
-
-        //DELETE metodo para usar el DELETE en el controlador
-
-        public String deleteUsuario (String id) throws Exception {
-            try {
-                Usuario usuario = getUsuario(id);
-                this.usuarios.remove(usuario);
-                return "Usuario Eliminado Existosamente.";
-            }catch (Exception e) {
-                throw new Exception("Usuario NO Existe para Eliminar.");
-            }
-        }
-
-
-
-
-
-
-
-
-    public ArrayList<Usuario> getUsuarios() {
-        return usuarios;
+    @Override
+    public Usuario updateUsuario(Usuario usuario_update, String id) {
+        return null;
     }
 
-    public void setUsuarios(ArrayList<Usuario> usuarios) {
-        this.usuarios = usuarios;
+    @Override
+    public String deleteUsuario(String id) {
+        repositorio.deleteById(id);
+        return "Usuario Eliminado Exitosamente.";
     }
 }

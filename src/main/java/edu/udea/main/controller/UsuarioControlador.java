@@ -2,23 +2,26 @@ package edu.udea.main.controller;
 
 
 import edu.udea.main.business.GestorUsuario;
+import edu.udea.main.business.GestorUsuarioInterface;
+import edu.udea.main.business.GestorUsuarioList;
 import edu.udea.main.model.ObjetoRespuesta;
 import edu.udea.main.model.Usuario;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.annotation.Target;
-import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class UsuarioControlador {
 
-    private GestorUsuario gestorUsuario = new GestorUsuario();
+    @Autowired
+    private GestorUsuarioInterface gestorUsuario;
 
     // Metodo GET con QUERY PARAMS
     @GetMapping("/usuarios")
-    public ResponseEntity<ArrayList<Usuario>> getUsuario() {
+    public ResponseEntity<List<Usuario>> getUsuario() {
         return new ResponseEntity<>(gestorUsuario.getUsuarios(), HttpStatus.OK);
     }
 
