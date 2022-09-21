@@ -1,4 +1,4 @@
-package edu.udea.main.business;
+package edu.udea.main.service;
 
 import edu.udea.main.model.Usuario;
 
@@ -11,7 +11,7 @@ public interface GestorUsuarioInterface {
     public Usuario getUsuario(String id) throws Exception;
     public String setUsuario(Usuario usuario_parametro);
     public Usuario updateUsuarioAll (Usuario usuario_update, String id) throws Exception;
-    public Usuario updateUsuario (Usuario usuario_update, String id);
+    public Usuario updateUsuario (Usuario usuario_update, String id) throws Exception;
     public String deleteUsuario(String id);
 
 }

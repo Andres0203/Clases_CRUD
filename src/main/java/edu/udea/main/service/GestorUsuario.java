@@ -1,10 +1,11 @@
-package edu.udea.main.business;
+package edu.udea.main.service;
 
 import edu.udea.main.model.Usuario;
 import edu.udea.main.repository.UsuarioRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,6 +36,7 @@ public class GestorUsuario implements GestorUsuarioInterface{
         return "Usuario creado con Exito.";
     }
 
+    @Transactional
     @Override
     public Usuario updateUsuarioAll(Usuario usuario_update, String id) throws Exception {
         repositorio.update(usuario_update.getNombre(),usuario_update.getPassword(), id);
@@ -42,8 +44,17 @@ public class GestorUsuario implements GestorUsuarioInterface{
     }
 
     @Override
-    public Usuario updateUsuario(Usuario usuario_update, String id) {
-        return null;
+    public Usuario updateUsuario(Usuario usuario_update, String id) throws Exception {
+        Usuario usuario_bd =getUsuario(id);
+
+        if (usuario_update.getNombre() != null && usuario_update.getNombre().equals("")){
+            usuario_bd.setNombre(usuario_update.getNombre());
+        }
+        if (usuario_update.getPassword() != null && usuario_update.getPassword().equals("")){
+            usuario_bd.setPassword(usuario_update.getPassword());
+
+        }
+        return repositorio.save(usuario_bd);
     }
 
     @Override

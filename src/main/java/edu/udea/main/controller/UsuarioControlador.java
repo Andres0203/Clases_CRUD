@@ -1,9 +1,7 @@
 package edu.udea.main.controller;
 
 
-import edu.udea.main.business.GestorUsuario;
-import edu.udea.main.business.GestorUsuarioInterface;
-import edu.udea.main.business.GestorUsuarioList;
+import edu.udea.main.service.GestorUsuarioInterface;
 import edu.udea.main.model.ObjetoRespuesta;
 import edu.udea.main.model.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
